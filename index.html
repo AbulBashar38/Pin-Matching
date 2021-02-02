@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pin Generator</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="pin-generator half-width">
+                    <input id="showPin" class="form-control" type="text">
+                    <button id="genaret-number" class="generate-btn">Generate Pin</button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="input-section half-width">
+                    <input id="show-Type" class="form-control" type="text">
+                    <div class="numbers">
+                        <div id="allNumbers" class="calc-body">
+                            <div class="calc-button-row">
+                                <div class="button">7</div>
+                                <div class="button">8</div>
+                                <div class="button">9</div>
+                            </div>
+                            <div class="calc-button-row">
+                                <div class="button">4</div>
+                                <div class="button">5</div>
+                                <div class="button">6</div>
+                            </div>
+                            <div class="calc-button-row">
+                                <div class="button">1</div>
+                                <div class="button">2</div>
+                                <div class="button">3</div>
+                            </div>
+                            <div class="calc-button-row">
+                                <div class="button">B</div>
+                                <div class="button">0</div>
+                                <div class="button">C</div>
+                            </div>
+                            <div>
+                                <button id="submitBtn" class="submit-btn">Submit</button>
+                                <p class="action-left"><span id="left-try">3</span> try left</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="notify-section">
+                <p id="incorrect" class="notify">❌ Pin Didn't Match, Please try again</p>
+                <p id="correct" class="notify">✅ Pin Matched... Secret door is opening for you</p>
+            </div>
+        </div>
+        <script>
+            document.getElementById('genaret-number').addEventListener('click', function () {
+                function getPin() {
+                    var randomNumber = Math.random() * 10000;
+                    var OnlyNumber = Math.round(randomNumber);
+                    var convertNumber = OnlyNumber + '';
+
+                    if (convertNumber.length === 4) {
+                        return convertNumber;
+
+                    }
+                    else {
+                        return getPin();
+                    }
+                }
+                document.getElementById('showPin').value = getPin();
+            })
+            document.getElementById('allNumbers').addEventListener('click', function (event) {
+                var digit = event.target.innerText;
+                var showNum = document.getElementById('show-Type');
+                // console.log(digit);
+                if (isNaN(digit)) {
+                    if(digit === 'C'){
+                        showNum.value = '';
+                    }
+                    else if (digit === 'B') {
+                        var withValue = showNum.value;
+                        showNum.value = withValue.substring(0, withValue.length - 1)
+                    }
+                }
+
+                else {
+                    showNum.value = showNum.value + digit;
+                }
+
+            })
+            document.getElementById('submitBtn').addEventListener('click', function(){
+                var generatedPin = document.getElementById('showPin').value;
+                var typedPin = document.getElementById('show-Type').value; 
+                if(generatedPin == typedPin){
+                    showCorrectOrIncorrect('block', 'none')
+                }
+                else if(generatedPin !== typedPin){
+                    showCorrectOrIncorrect('none', 'block');
+                    var captureLeftTry = document.getElementById('left-try').innerText;
+                    var leftTryNumber = parseInt(captureLeftTry);
+                    leftTryNumber = leftTryNumber - 1;
+                    document.getElementById('left-try').innerText = leftTryNumber;
+                    if(leftTryNumber < 1){
+                        document.getElementById('submitBtn').disabled = true;
+                    }
+                    
+                    document.getElementById('show-Type').value = '';
+
+                    document.getElementById('showPin').value = '';
+                }
+                function showCorrectOrIncorrect(correctType, incorrectType) {
+                    document.getElementById('correct').style.display = correctType;
+                    document.getElementById('incorrect').style.display = incorrectType;
+                } 
+            })
+
+
+        </script>
+</body>
+
+</html>
